@@ -1,0 +1,59 @@
+# Validation and Test Results
+
+The system was validated using seven operational scenarios covering both nominal and exceptional conditions.
+
+Scenario 1 – Normal Delivery
+
+Objective:
+Verify successful delivery with kitchen and table confirmations.
+
+Result:
+Robot completed the entire workflow and returned home successfully.
+
+Scenario 2 – Kitchen Timeout
+
+Objective:
+Verify robot behaviour when kitchen confirmation is not received.
+
+Result:
+Robot abandoned delivery and returned home after timeout.
+
+Scenario 3 – Table Timeout
+
+Objective:
+Verify robot behaviour when table confirmation is not received.
+
+Result:
+Robot skipped the delivery and proceeded according to workflow rules.
+
+Scenario 4 – Order Cancellation
+
+Objective:
+Verify cancellation handling during active delivery.
+
+Result:
+Robot safely terminated delivery and executed the appropriate return sequence.
+
+Scenario 5 – Multiple Deliveries
+
+Objective:
+Validate handling of multiple table requests within a single order.
+
+Result:
+Robot completed deliveries sequentially before returning home.
+
+Scenario 6 – Missing Confirmation During Multi-Order Delivery
+
+Objective:
+Verify continuation of remaining deliveries after a table fails to confirm.
+
+Result:
+Robot skipped the affected table and completed remaining deliveries.
+
+Scenario 7 – Cancellation During Multi-Order Delivery
+
+Objective:
+Verify selective cancellation handling.
+
+Result:
+Cancelled table was skipped while remaining deliveries were completed successfully.
