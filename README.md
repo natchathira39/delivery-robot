@@ -1,82 +1,52 @@
-**Restaurant Butler Robot - ROS2**
+**Restaurant Butler Robot using ROS2**
 
-A ROS2-based butler robot that collects food from the kitchen and delivers to tables with full confirmation, timeout, and cancellation handling.
+**Executive Summary**
 
-**Package Structure**
-butler_robot/
-├── butler_robot/
-│   ├── robot_controller.py   # State machine + main logic
-│   ├── order_manager.py      # Publishes orders
-│   ├── confirmation_node.py  # Sends kitchen/table confirmations
-│   └── cancel_order.py       # Sends cancellation signal
-├── setup.py
-└── package.xml
+This project implements a ROS2-based Butler Robot designed for restaurant delivery operations. The robot receives customer orders, collects food from the kitchen, delivers to one or more tables, processes confirmations, handles cancellations, and returns safely to its home position.
 
-## Locations
-| Location | Coordinates |
-|----------|-------------|
-| Home     | (0, 0)      |
-| Kitchen  | (1, 0)      |
-| Table1   | (2, 1)      |
-| Table2   | (2, 2)      |
-| Table3   | (2, 3)      |
+The implementation focuses on modular ROS2 node architecture, event-driven communication, timeout handling, and state-machine-based decision making.
 
-## State Machine
-IDLE → GO_TO_KITCHEN → WAIT_KITCHEN_CONFIRM → GO_TO_TABLE → WAIT_TABLE_CONFIRM → RETURN_KITCHEN → RETURN_HOME
+---
 
-## 📡 ROS2 Topics
-| Topic | Type | Purpose |
-|-------|------|---------|
-| `/new_order` | String | Send table order |
-| `/kitchen_confirm` | String | Kitchen confirmation |
-| `/table_confirm` | String | Table confirmation |
-| `/cancel_order` | String | Cancel current order |
-| `/robot_status` | String | Robot status updates |
+**Design Philosophy**
 
-## ⚙️ Setup & Run
+The system was intentionally designed as a distributed ROS2 application rather than a single monolithic program.
 
-### Prerequisites
-- Ubuntu 22.04
-- ROS2 Humble
+Each responsibility was isolated into an independent node:
 
-### Build
-```bash
-cd ~/butler_ws
-source /opt/ros/humble/setup.bash
-colcon build
-source install/setup.bash
-```
+* Order generation
+* Robot control
+* Confirmation handling
+* Cancellation handling
 
-### Run (4 terminals)
-```bash
-# Terminal 1
-ros2 run butler_robot robot_controller
+This approach improves maintainability, scalability, and fault isolation.
 
-# Terminal 2
-ros2 run butler_robot confirmation_node
+The Robot Controller acts as the central decision-making component and implements the complete delivery workflow.
 
-# Terminal 3
-ros2 run butler_robot order_manager
 
-# Terminal 4 (only for cancellation scenarios)
-ros2 run butler_robot cancel_order
-```
+**Key Engineering Decisions**
 
-## Scenarios Tested
+**State Machine Approach**
 
-| Scenario | Description | Result |
-|----------|-------------|--------|
-| 1 | Single order, full confirmation | Pass |
-| 2 | Kitchen timeout, return home | Pass |
-| 3a | No kitchen confirm, return home |  Pass |
-| 3b | No table confirm, skip table | Pass |
-| 4 | Cancel during delivery | Pass |
-| 5 | Multiple tables, all confirmed | Pass |
-| 6 | Multiple tables, skip unconfirmed | Pass |
-| 7 | Multiple tables, cancel one |  Pass |
+A state machine was selected because restaurant delivery operations naturally consist of discrete operational states.
 
-## Key ROS2 Concepts Used
-- Publishers & Subscribers
-- Multi-threaded executor
-- Multiple nodes communicating via topics
-- State machine design pattern
+Advantages:
+
+* Predictable behaviour
+* Easy debugging
+* Clear transition rules
+* Simplified exception handling
+
+**Timeout-Based Safety**
+
+Timeout mechanisms were implemented to prevent indefinite waiting at kitchen and table locations.
+
+This ensures the robot always reaches a safe terminal state even when confirmations are not received.
+
+### Event-Driven Communication
+
+ROS2 Publisher-Subscriber communication was chosen to decouple robot behaviour from user interaction.
+
+Orders, confirmations, and cancellations are treated as asynchronous events.
+
+This architecture closely resembles real-world robotic systems.
